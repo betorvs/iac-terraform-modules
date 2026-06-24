@@ -14,6 +14,7 @@ variable "provider_thumbprint_list" {
 }
 
 variable "tags" {
+  type = map(string)
   default = {
     "identity" = "github"
   }
