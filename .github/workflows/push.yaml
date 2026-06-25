@@ -2,6 +2,8 @@ name: Push tests
 
 on:
   push:
+    branches-ignore:
+      - 'main'
 
 jobs:
   detect-changes:
