@@ -24,7 +24,7 @@ jobs:
           if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
             BEFORE_SHA="HEAD~1"
           fi
-          CHANGED_DIRS=$(git diff --name-only $BEFORE_SHA ${{ github.sha }} | grep -E '\.(tf|tftest\.hcl)$' | xargs -I {} dirname {} | sort -u | jq -R -s -c 'split("\n")[:-1]')
+          CHANGED_DIRS=$(git diff --name-only $BEFORE_SHA ${{ github.sha }} | grep -E '\.(tf|tftest\.hcl)$' | xargs -I {} dirname {} | grep -v 'tests$' | sort -u | jq -R -s -c 'split("\n")[:-1]')
           
           if [ "$CHANGED_DIRS" == "[]" ] || [ -z "$CHANGED_DIRS" ]; then
             echo "modules=[]" >> $GITHUB_OUTPUT
