@@ -56,7 +56,7 @@ run "apply" {
   variables {
     role_attach_policy_arn = "arn:aws:iam::111111111111:policy/github-oidc-policy"
 
-    role_description = "github oidc role test"
+    role_description = "github oidc role"
 
     repositories = [
       "repo:betorvs/iac-terraform-modules:ref:refs/heads/main"
