@@ -15,23 +15,19 @@ resource "aws_iam_role" "this" {
 }
 
 data "aws_iam_policy_document" "this" {
-
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
-
     condition {
       test     = var.policy_condition_test
       values   = var.repositories
       variable = "token.actions.githubusercontent.com:sub"
     }
-
     condition {
       test     = var.policy_condition_test
       values   = ["sts.amazonaws.com"]
       variable = "token.actions.githubusercontent.com:aud"
     }
-
     principals {
       identifiers = [aws_iam_openid_connect_provider.this.arn]
       type        = "Federated"
