@@ -54,11 +54,11 @@ run "apply" {
   command = apply
 
   variables {
-    bucket_name = "ministack-aws-s3-test"
+    bucket_name = "ministack-aws-s3-test-00"
   }
 
   assert {
-    condition     = aws_s3_bucket.bucket.bucket == "ministack-aws-s3-test"
+    condition     = aws_s3_bucket.bucket.bucket == "ministack-aws-s3-test-00"
     error_message = "Invalid bucket name"
   }
 }
