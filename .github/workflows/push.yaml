@@ -62,6 +62,7 @@ jobs:
       - name: Validate Terraform Syntax
         working-directory: ${{ matrix.module }}
         run: |
+          pwd
           terraform init -backend=false
           terraform validate
       - name: Run TFLint Analysis
@@ -95,6 +96,7 @@ jobs:
       - name: Terraform Test
         working-directory: ${{ matrix.module }}
         run: |
+          pwd
           terraform init
           terraform test
       
