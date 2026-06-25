@@ -1,0 +1,9 @@
+.DS_Store
+
+.idea
+.venv
+
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
