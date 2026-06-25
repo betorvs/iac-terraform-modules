@@ -1,13 +1,9 @@
-name: Terraform Module Releaser
-on:
-  pull_request:
-    types: [opened, reopened, synchronize, closed] # Closed required
-    branches:
-      - main
+name: Push tests
 
-permissions:
-  contents: write
-  pull-requests: write
+on:
+  push:
+    branches-ignore:
+      - 'main'
 
 jobs:
   detect-changes:
@@ -26,7 +22,11 @@ jobs:
         run: |
           # Detect unique directories holding modified .tf files
           # Adjust the grep filter if your modules live inside a specific folder like 'modules/'
-          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before || github.event.pull_request.base.sha }} ${{ github.sha }} | grep -E '\.(tf|tftest\.hcl)$' | xargs -I {} dirname {} | grep -v 'tests$' | sort -u | jq -R -s -c 'split("\n")[:-1]')
+          BEFORE_SHA="${{ github.event.before }}"
+          if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE_SHA="HEAD~1"
+          fi
+          CHANGED_DIRS=$(git diff --name-only $BEFORE_SHA ${{ github.sha }} | grep -E '\.(tf|tftest\.hcl)$' | xargs -I {} dirname {} | grep -v 'tests$' | sort -u | jq -R -s -c 'split("\n")[:-1]')
           
           if [ "$CHANGED_DIRS" == "[]" ] || [ -z "$CHANGED_DIRS" ]; then
             echo "modules=[]" >> $GITHUB_OUTPUT
@@ -64,6 +64,7 @@ jobs:
       - name: Validate Terraform Syntax
         working-directory: ${{ matrix.module }}
         run: |
+          pwd
           terraform init -backend=false
           terraform validate
       - name: Run TFLint Analysis
@@ -100,13 +101,4 @@ jobs:
           pwd
           terraform init
           terraform test
-
-  release:
-    needs: ["terraform-ci"]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      - name: Terraform Module Releaser
-        uses: techpivot/terraform-module-releaser@f742e14f90a7d35f0ab230cce7db22169151aaeb # v2.1.0
+      
