@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - 'main'
 
+# Fixes CKV2_GHA_1 by locking down top-level defaults
+permissions:
+  contents: read
+
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
@@ -70,10 +74,24 @@ jobs:
       - name: Run TFLint Analysis
         working-directory: ${{ matrix.module }}
         run: tflint -f compact
+  scan:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Checkov GitHub Action
+        uses: bridgecrewio/checkov-action@a7683e7b72a04503521247973281ec8142e1ac1f # v12.3112.0
+        with:
+          # This will add both a CLI output to the console and create a results.sarif file
+          output_format: cli
+          output_file_path: console
 
   integration-tests:
     runs-on: ubuntu-latest
-    needs: ["terraform-ci", "detect-changes"]
+    needs: ["terraform-ci", "detect-changes", "scan"]
     if: needs.detect-changes.outputs.has_changes == 'true'
     strategy:
       fail-fast: false
