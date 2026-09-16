@@ -134,4 +134,4 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Terraform Module Releaser
-        uses: techpivot/terraform-module-releaser@f742e14f90a7d35f0ab230cce7db22169151aaeb # v2.1.0
+        uses: techpivot/terraform-module-releaser@b5df513373777916d19dd842bf0b2b7461e7cf8f # v2.2.1
